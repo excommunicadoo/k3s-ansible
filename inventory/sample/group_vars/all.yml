@@ -155,19 +155,19 @@ custom_registries_yaml: |
   mirrors:
     docker.io:
       endpoint:
-        - "https://registry.domain.com/v2/dockerhub"
+        - "{{ local_registry_url }}"
     quay.io:
       endpoint:
-        - "https://registry.domain.com/v2/quayio"
+        - "{{ local_registry_url }}"
     ghcr.io:
       endpoint:
-        - "https://registry.domain.com/v2/ghcrio"
-    registry.domain.com:
+        - "{{ local_registry_url }}"
+    your-local-registry:5000:
       endpoint:
-        - "https://registry.domain.com"
+        - "{{ local_registry_url }}"
 
   configs:
-    "registry.domain.com":
+    "{{ local_registry_url }}":
       auth:
         username: yourusername
         password: yourpassword
@@ -181,3 +181,27 @@ custom_registries_yaml: |
 #   HTTP_PROXY: "http://proxy.domain.local:3128"
 #   HTTPS_PROXY: "http://proxy.domain.local:3128"
 #   NO_PROXY: "*.domain.local,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+
+# Local fileserver URL (e.g., Hauler fileserver)
+local_fileserver_url: "http://your-local-fileserver"
+
+# Local registry URL (e.g., Hauler registry)
+local_registry_url: "your-local-registry:5000"
+
+# K3s binary URLs and checksums for air-gapped installation
+k3s_download_base_url: "{{ local_fileserver_url }}/k3s/{{ k3s_version }}"
+k3s_binary_url_x64: "{{ k3s_download_base_url }}/k3s"
+k3s_binary_checksum_x64: "sha256:<your_local_checksum_x64>"
+
+k3s_binary_url_arm64: "{{ k3s_download_base_url }}/k3s-arm64"
+k3s_binary_checksum_arm64: "sha256:<your_local_checksum_arm64>"
+
+k3s_binary_url_armhf: "{{ k3s_download_base_url }}/k3s-armhf"
+k3s_binary_checksum_armhf: "sha256:<your_local_checksum_armhf>"
+
+# Kube-Vip manifests URLs
+kube_vip_cloud_provider_manifest_url: "{{ local_fileserver_url }}/manifests/kube-vip-cloud-controller.yaml"
+kube_vip_rbac_manifest_url: "{{ local_fileserver_url }}/manifests/vip-rbac.yaml"
+
+# MetalLB manifest URL
+metallb_manifest_url: "{{ local_fileserver_url }}/manifests/metallb-{{ metal_lb_type }}.yaml"
